@@ -1,2 +1,2 @@
-# dash budget app
- Webapp built using Dash to assist in tracking finances.
+# Dash Suite
+A suite of tools built on python and dash to assist in everyday life.
