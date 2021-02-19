@@ -1,7 +1,6 @@
 import os
 from datetime import date
 import pandas as pd
-#os.chdir('C:/Users/sourp/Documents/github_repos/dash-budget-app') # COMMENT WHEN PUSHING
 
 class Data(object):
 	def __init__(self, user='ben'):

@@ -1,0 +1,73 @@
+.sidebar-div {
+  height: 100vh;
+  width: 8vh;
+  background: #182128;
+  margin-top: 8vh;
+  position: fixed;
+  z-index: 1;
+}
+
+.sidebar-nav2 {
+
+}
+
+.sidebar-nav2 > ul {
+  text-align: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav2 > ul > li {
+  position: relative;
+  width: 8vh;
+  cursor: pointer;
+  background: #182128;
+  text-transform: uppercase;
+  transition:all .4s ease-out;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav2 > ul > li:after {
+  position: absolute;
+  background: rgba(0,0,0,0.9);
+  color: white;
+  top: 0;
+  left: 8vh;
+  width: 100px; height: 100%;
+  transform: perspective(400px) rotateY(90deg);
+  transform-origin: 0 100%;
+  transition:all .4s ease-out;
+}
+
+.sidebar-nav2 > ul > li:nth-child(1):after { 
+  content: "Home";
+  line-height: 88px;
+}
+.sidebar-nav2 > ul > li:nth-child(2):after { 
+  content: "Ben's Budget";
+  line-height: 88px;
+}
+.sidebar-nav2 > ul > li:nth-child(3):after { 
+  content: "Portfolio";
+  line-height: 88px;
+}
+.sidebar-nav2 > ul > li:nth-child(4):after { 
+  content: "New";
+  line-height: 88px;
+}
+
+.sidebar-nav2 > ul > li:hover {
+  transform: translateX(-8vh);
+}
+
+.sidebar-nav2 > ul > li:hover:after {
+  transform: perspective(400px) rotateY(0deg) scale(1) ;
+}
+
+.sidebar-nav2 > ul > li > div {
+  padding: 25px;
+}
+
