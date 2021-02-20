@@ -5,9 +5,8 @@ import dash_html_components as html
 from app import app
 
 layout = html.Div([
-    dcc.Link('Ben\'s Budget', href='/apps/budgets/ben'),
+    dcc.Link('Budget', href='/apps/budget'),
     html.Br(),
-    dcc.Link('Maddy\'s Budget', href='/apps/budgets/maddy'),
     html.Br(),
     dcc.Link('Portfolio', href='/portfolio')
 ], className='home-navigation-div')

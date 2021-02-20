@@ -3,6 +3,7 @@ from dash.dependencies import Input, Output, State
 import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.exceptions import PreventUpdate
 import pandas as pd
 from app import app
 import plotly.express as px
@@ -13,10 +14,10 @@ import data_controller as dc
 
 pd.options.mode.chained_assignment = None
 
-data_funcs = dc.Data()
+data_funcs = dc.Data('.')
 
-def get_data():
-    data = dc.Data()
+def get_data(user):
+    data = dc.Data(user=user)
     today = date.today()
     invoice_df = data.display_invoices()
     invoice_df.loc[:,'Date'] = pd.to_datetime(invoice_df.loc[:, 'Date']).dt.strftime('%m/%d/%Y')
@@ -48,7 +49,7 @@ def get_data():
 
     return return_dict
 
-data = get_data()
+data = get_data('.')
 
 layout = dcc.Tabs([
         dcc.Tab(label='Summary Tab', children=[
@@ -184,6 +185,15 @@ layout = dcc.Tabs([
                         dcc.Input(id='new-balance-name', type='text', placeholder='Name', style={'height':'50%'})]),
                     html.Div([
                         dcc.Input(id='new-balance-funds', type='number', placeholder='Funds', style={'height':'50%'})]),
+                    html.Div([
+                        dcc.Input(id='new-balance-goal', type='number', placeholder='Goal', style={'height':'50%'})]),
+                    html.Div([
+                         dcc.DatePickerSingle(
+                            id='new-balance-goal-date',
+                            clearable=True,
+                            with_portal=True,
+                            placeholder='Goal Date'
+                            )]),
 
                     html.Button('New Balance', id='new-balance', className='balance-button', style={'height':'50%'})
                 ], className='new-balance-grid')
@@ -191,7 +201,8 @@ layout = dcc.Tabs([
             ], className='invoice-grid'),
             html.Div(id='hidden-div-invoice',style={'display':'none','visibility':'hidden'}),
             html.Div(id='hidden-div-transfer',style={'display':'none','visibility':'hidden'}),
-            html.Div(id='hidden-div-balance',style={'display':'none','visibility':'hidden'})
+            html.Div(id='hidden-div-balance',style={'display':'none','visibility':'hidden'}),
+            html.Div(id='hidden-username-budget', style={'display':'none'}, children='')
         ])
     ])
 
@@ -210,11 +221,12 @@ def update_category(value):
     [State('input-category', 'value')],
     [State('input-type', 'value')],
     [State('input-balance', 'value')],
-    [State('input-date', 'date')]
+    [State('input-date', 'date')],
+    [State('username-store', 'data')]
     )
-def new_invoice(n_clicks,value,name,category,invoice_type,balance,date):
+def new_invoice(n_clicks,value,name,category,invoice_type,balance,date,user_store):
     if n_clicks:
-        input_dict = {'value':value,'name':name,'category':category,'invoice_type':invoice_type,'balance':balance,'date':date}
+        input_dict = {'value':value,'name':name,'category':category,'invoice_type':invoice_type,'balance':balance,'date':date,'user':user_store['name']}
         data_funcs.new_invoice(input_dict)
 
 @app.callback(
@@ -222,24 +234,28 @@ def new_invoice(n_clicks,value,name,category,invoice_type,balance,date):
     [Input('transfer-balance', 'n_clicks')],
     [State('from-balance', 'value')],
     [State('to-balance', 'value')],
-    [State('transfer-funds', 'value')]
+    [State('transfer-funds', 'value')],
+    [State('username-store', 'data')]
     )
-def transfer_balance(n_clicks,t_from,t_to,funds):
+def transfer_balance(n_clicks,t_from,t_to,funds,user_store):
     if n_clicks:
-        input_dict = {'value':funds,'name':f'From: {t_from}, To: {t_to}','category':'Transfers','invoice_type':'Transfer','balance':'','date':str(data['today'])}
+        input_dict = {'value':funds,'name':f'From: {t_from}, To: {t_to}','category':'Transfers','invoice_type':'Transfer','balance':'','date':str(data['today']),'user':user_store['name']}
         data_funcs.new_invoice(input_dict)
-        transfer_dict = {'from_balance':t_from,'to_balance':t_to,'funds':funds}
+        transfer_dict = {'from_balance':t_from,'to_balance':t_to,'funds':funds,'user':user_store['name']}
         data_funcs.transfer_balance(transfer_dict)
 
 @app.callback(
     Output('hidden-div-balance','children'),
     [Input('new-balance', 'n_clicks')],
     [State('new-balance-name', 'value')],
-    [State('new-balance-funds', 'value')]
+    [State('new-balance-funds', 'value')],
+    [State('new-balance-goal', 'value')],
+    [State('new-balance-goal-date', 'date')],
+    [State('username-store', 'data')]
     )
-def new_balance(n_clicks,name,funds):
+def new_balance(n_clicks,name,funds,goal,goal_date,user_store):
     if n_clicks:
-        input_dict = {'name':name,'funds':funds}
+        input_dict = {'name':name,'funds':funds,'goal':goal,'goal_date':goal_date,'user':user_store['name']}
         data_funcs.new_balance(input_dict)
 
 @app.callback(
@@ -256,11 +272,15 @@ def new_balance(n_clicks,name,funds):
     Output('to-balance','options'),
     Input('new-balance','n_clicks'),
     Input('submit-invoice','n_clicks'),
-    Input('transfer-balance','n_clicks')
+    Input('transfer-balance','n_clicks'),
+    Input('username-store','data')
     )
-def update_data(clicks1,clicks2,clicks3):
-    data = get_data()
-    return data['expense_summary'].loc[:].to_dict('records'),data['net_income'].loc[:].to_dict('records')\
-            ,data['income_summary'].loc[:].to_dict('records'),data['balances'].loc[:].to_dict('records')\
-            ,data['expense_fig'],data['invoice_df'].loc[:].to_dict('records')\
-            ,data['categories'],data['balance_names'],data['today'],data['balance_names'],data['balance_names']
+def update_data(clicks1,clicks2,clicks3,user):
+    if user['name'] and user['name'] != '':
+        data = get_data(user['name'])
+        return data['expense_summary'].loc[:].to_dict('records'),data['net_income'].loc[:].to_dict('records')\
+                ,data['income_summary'].loc[:].to_dict('records'),data['balances'].loc[:].to_dict('records')\
+                ,data['expense_fig'],data['invoice_df'].loc[:].to_dict('records')\
+                ,data['categories'],data['balance_names'],data['today'],data['balance_names'],data['balance_names']
+    else:
+        raise PreventUpdate

@@ -47,7 +47,7 @@
   line-height: 88px;
 }
 .sidebar-nav2 > ul > li:nth-child(2):after { 
-  content: "Ben's Budget";
+  content: "Budget";
   line-height: 88px;
 }
 .sidebar-nav2 > ul > li:nth-child(3):after { 
@@ -60,7 +60,7 @@
 }
 
 .sidebar-nav2 > ul > li:hover {
-  transform: translateX(-8vh);
+  transform: translateX(0vh);
 }
 
 .sidebar-nav2 > ul > li:hover:after {

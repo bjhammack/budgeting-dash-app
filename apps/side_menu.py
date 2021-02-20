@@ -10,21 +10,21 @@ layout = html.Div([
 						html.Div([
 							html.A([
 	 							html.I(className='bi-house', style={'font-size':'30px','color':'white'}),
-	 							],href='/apps/home/')
+	 							],href='/apps/home')
 						])
 					], className='sidebar-li'),
 					html.Li([
 						html.Div([
 							html.A([
 	 							html.I(className='bi-cash-stack', style={'font-size':'30px','color':'white'}),
-	 							],href='/apps/budgets/ben')
+	 							],href='/apps/budget')
 						])
 					], className='sidebar-li'),
 					html.Li([
 						html.Div([
 							html.A([
 	 							html.I(className='bi-bar-chart-line', style={'font-size':'30px','color':'white'}),
-	 							],href='/apps/portfolio/')
+	 							],href='/apps/portfolio')
 						])
 					], className='sidebar-li'),
 					html.Li([

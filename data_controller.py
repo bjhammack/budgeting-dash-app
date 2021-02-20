@@ -3,33 +3,42 @@ from datetime import date
 import pandas as pd
 
 class Data(object):
-	def __init__(self, user='ben'):
+	def __init__(self, user=None):
+		users = pd.read_csv(f'data/users.csv')
 		self.user = user
-		self.invoices = pd.read_csv(f'data/invoices_{self.user}.csv')
-		self.balances = pd.read_csv(f'data/balances_{self.user}.csv')
+		if user:
+			self.invoices = pd.read_csv(f'data/invoices.csv')
+			self.balances = pd.read_csv(f'data/balances.csv')
+			
+			self.user = users.loc[users['username'].eq(user)]
 
-		self.invoices['Date'] = pd.to_datetime(self.invoices['Date'])
-		self.invoices['year'] = pd.DatetimeIndex(self.invoices['Date']).year
-		self.invoices['month'] = pd.DatetimeIndex(self.invoices['Date']).month
-		self.invoices['day'] = pd.DatetimeIndex(self.invoices['Date']).day
-		self.invoices['Value'] = self.invoices['Value'].astype(float)
-		
-		self.balances['Funds'] = self.balances['Funds'].astype(float)
+			self.invoices['Date'] = pd.to_datetime(self.invoices['Date'])
+			self.invoices['year'] = pd.DatetimeIndex(self.invoices['Date']).year
+			self.invoices['month'] = pd.DatetimeIndex(self.invoices['Date']).month
+			self.invoices['day'] = pd.DatetimeIndex(self.invoices['Date']).day
+			self.invoices['Value'] = self.invoices['Value'].astype(float)
+			
+			self.balances['Funds'] = self.balances['Funds'].astype(float)
 
-		self.current_date = date.today()
-		self.current_year = self.current_date.year
-		self.current_month = self.current_date.month
-		self.current_day = self.current_date.day
+			self.current_date = date.today()
+			self.current_year = self.current_date.year
+			self.current_month = self.current_date.month
+			self.current_day = self.current_date.day
+
+			self.user_invoices = self.invoices.loc[self.invoices['user'].eq(user)]
+			self.user_balances = self.balances.loc[self.balances['user'].eq(user)]
+		else:
+			self.users = users
 
 	def display_balances(self):
-		df = self.balances.loc[:,['Name','Funds']]
+		df = self.user_balances.loc[:,['Name','Funds']]
 		return df
 
 	def display_invoices(self, invoice_type=None):
 		if not invoice_type:
-			return self.invoices[['Date','Value','Name','Category','Type']]
+			return self.user_invoices[['Date','Value','Name','Category','Type']]
 		else:
-			df = self.invoices.loc[self.invoices['Type'].eq(invoice_type.title())][['Date','Value','Name','Category','Type']]
+			df = self.user_invoices.loc[self.user_invoices['Type'].eq(invoice_type.title())][['Date','Value','Name','Category','Type']]
 			return df 
 
 	def new_invoice(self, input_dict=None):
@@ -39,36 +48,39 @@ class Data(object):
 		invoice_type = input_dict['invoice_type'].title()
 		balance = input_dict['balance'].title()
 		date = input_dict['date']
-
+		user = input_dict['user']
 
 		if date in (None, '', ' '):
 			date = self.current_date
 
-		new_row = {'Date':date, 'Value':value, 'Name':name, 'Category':category, 'Type':invoice_type}
+		new_row = {'Date':date, 'Value':value, 'Name':name, 'Category':category, 'Type':invoice_type, 'user':user}
 		self.invoices = self.invoices.loc[:].append(new_row, ignore_index=True).sort_values(by=['Date','Category','Name','Value'], ascending=[False,True,True,False])
 
 		self._update_csv('invoices')
 
-		self.update_balance(balance, value, invoice_type)
+		self.update_balance(balance, value, invoice_type, user)
 
 		print(f'New {new_row["Type"]} created.\n\n{new_row["Date"]}, ${new_row["Value"]}, {new_row["Name"]}, {new_row["Category"]}')
 
 	def new_balance(self, input_dict=None):
 		name = input_dict['name'].title()
 		funds = round(float(input_dict['funds']), 2)
+		goal = round(float(input_dict['goal']), 2)
+		goal_date = input_dict['goal_date']
+		user = input_dict['user']
 
-		new_row = {'Name':name, 'Funds':funds}
+		new_row = {'Name':name, 'Funds':funds, 'Goal':goal ,'Goal Date':goal_date,'user':user}
 		self.balances = self.balances.loc[:].append(new_row, ignore_index=True).sort_values(by=['Name','Funds'])
 
 		self._update_csv('balances')
 
 		print(f'New balance created.\n\n{new_row["Name"]}, ${new_row["Funds"]}')
 
-	def update_balance(self, name=None, new_funds=None, fund_type=None):
+	def update_balance(self, name=None, new_funds=None, fund_type=None, user=None):
 		if fund_type == 'Expense':
 			new_funds *= -1
 
-		self.balances.loc[self.balances['Name']==name,'Funds'] = self.balances['Funds'] + new_funds
+		self.balances.loc[self.balances['Name'].eq(name) & self.balances['user'].eq(user),'Funds'] = self.balances['Funds'] + new_funds
 
 		self._update_csv('balances')
 
@@ -78,9 +90,10 @@ class Data(object):
 		from_balance = input_dict['from_balance']
 		to_balance = input_dict['to_balance']
 		funds = round(float(input_dict['funds']), 2)
+		user = input_dict['user']
 
-		self.balances.loc[self.balances['Name'].eq(from_balance), 'Funds'] = self.balances.Funds - funds
-		self.balances.loc[self.balances['Name'].eq(to_balance), 'Funds'] = self.balances.Funds + funds
+		self.balances.loc[self.balances['Name'].eq(from_balance) & self.balances['user'].eq(user), 'Funds'] = self.balances.Funds - funds
+		self.balances.loc[self.balances['Name'].eq(to_balance) & self.balances['user'].eq(user), 'Funds'] = self.balances.Funds + funds
 
 		self._update_csv('balances')
 
@@ -101,7 +114,7 @@ class Data(object):
 		if not year:
 			year = self.current_year
 
-		df = self.invoices.loc[self.invoices.year.eq(year)]
+		df = self.user_invoices.loc[self.user_invoices.year.eq(year)]
 
 		df.loc[df.Type.eq('Expense'), 'Value'] = df.Value * -1
 		df_gb = df.loc[df.Type.isin(('Expense','Income')), ['month','Value']].groupby(by='month').sum().reset_index()
@@ -125,7 +138,7 @@ class Data(object):
 
 	def _pivot_categories(self, by='year', year=None, invoice_type='expense', month=None):
 		if by == 'year':
-			df = self.invoices.loc[self.invoices['year'].eq(year) & self.invoices['Type'].eq(invoice_type.title())]
+			df = self.user_invoices.loc[self.user_invoices['year'].eq(year) & self.user_invoices['Type'].eq(invoice_type.title())]
 			
 			summary_df = df.loc[:].sort_values(by=['month','Category']).groupby(by=['month','Category']).sum().reset_index()
 			
@@ -158,8 +171,8 @@ class Data(object):
 
 	def _update_csv(self,type):
 		if type == 'invoices':
-			self.invoices[['Date','Value','Name','Category','Type']].to_csv(f'data/invoices_{self.user}.csv',index=False)
+			self.invoices[['Date','Value','Name','Category','Type','user']].to_csv(f'data/invoices.csv',index=False)
 		elif type == 'balances':
-			self.balances[['Name','Funds']].to_csv(f'data/balances_{self.user}.csv',index=False)
+			self.balances[['Name','Funds','Goal','Goal Date','user']].to_csv(f'data/balances.csv',index=False)
 		else:
 			raise Exception(f'Incorrect date type of {type} was provided.')
