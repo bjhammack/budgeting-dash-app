@@ -37,3 +37,4 @@ layout = html.Div([
 				], className='sidebar-ul')
 			], className='sidebar-nav2')
 		], className='sidebar-div')
+

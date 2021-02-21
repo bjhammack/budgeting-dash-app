@@ -13,23 +13,23 @@ layout = html.Div([
 			dcc.Input(id='login-username', type='text', placeholder='Username', style={'height':'50%'}),
 			dcc.Input(id='login-password', type='password', placeholder='Password', style={'height':'50%'}),
 			html.Button('Login', id='login-button', className='login-button', style={'height':'50%'}),
-			html.Div(id="hidden_redirect_div",style={'display':'none'})
-])
+			html.Div(id='hidden-redirect-div',style={'display':'none'})
+], className='login-div')
 
 @app.callback(
     Output('username-store','data'),
-    Output('hidden_redirect_div','children'),
-    [Input('login-button','n_clicks')],
-    [Input('login-username','value')],
-    [Input('login-password','value')]
+    Output('hidden-redirect-div','children'),
+    Input('login-button','n_clicks'),
+    State('login-username','value'),
+    State('login-password','value')
     )
 def check_login(n_clicks, username, password):
 	if n_clicks:
 	    user_pass_pairs = users.loc[users.username.eq(username) & users.password.eq(password)]
+	    print(user_pass_pairs)
 	    if len(user_pass_pairs) > 0:
 	    	return {'name':username}, dcc.Location(pathname='/apps/home',id='home-redirect')
 	    else:
 	    	return '', 'Incorrect Credentials'
-
 	else:
 		raise PreventUpdate

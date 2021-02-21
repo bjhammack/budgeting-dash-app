@@ -276,7 +276,7 @@ def new_balance(n_clicks,name,funds,goal,goal_date,user_store):
     Input('username-store','data')
     )
 def update_data(clicks1,clicks2,clicks3,user):
-    if user['name'] and user['name'] != '':
+    if user and user['name'] != '':
         data = get_data(user['name'])
         return data['expense_summary'].loc[:].to_dict('records'),data['net_income'].loc[:].to_dict('records')\
                 ,data['income_summary'].loc[:].to_dict('records'),data['balances'].loc[:].to_dict('records')\
