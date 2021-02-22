@@ -7,6 +7,5 @@ from app import app
 layout = html.Div([
     dcc.Link('Budget', href='/apps/budget'),
     html.Br(),
-    html.Br(),
-    dcc.Link('Portfolio', href='/portfolio')
+    dcc.Link('Portfolio', href='/apps/portfolio')
 ], className='home-navigation-div')

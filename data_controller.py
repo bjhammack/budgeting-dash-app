@@ -110,6 +110,28 @@ class Data(object):
 
 		return df.reset_index()
 
+	def projection_summary(self, invoice_type=None, year=None):
+		month_cols = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+		df = self.annual_summary()
+		df = df.loc[:].replace('--','0.0')
+
+		for col in month_cols+['Totals']:
+			df.loc[:,col] = df.loc[:,col].str.replace(',','')
+		
+		df.loc[:,month_cols] = df.loc[:,month_cols].astype(float)
+		
+		for i in range(1,len(month_cols)+1):
+			if i > int(self.current_month):
+				df.iloc[:,i] = df.iloc[:,1:i].mean(axis=1)
+			elif i == int(self.current_month):
+				df.iloc[:,i] = df.iloc[:,1:i].mean(axis=1) + abs(df.iloc[:,1:i+1].mean(axis=1) - df.iloc[:,i])
+
+		df.loc[:,'Totals'] = df.iloc[:,1:13].sum(axis=1)
+		df.loc[:] = df.loc[:].replace(0,'--')
+		df.loc[:,month_cols+['Totals']] = df.loc[:,month_cols+['Totals']].round(2)
+
+		return df
+
 	def net_income(self, year=None):
 		if not year:
 			year = self.current_year
