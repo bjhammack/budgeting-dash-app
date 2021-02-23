@@ -1,0 +1,146 @@
+.balance-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(20,1fr);
+	grid-template-rows: repeat(10,10vh);
+	grid-gap: 10px;
+}
+.balance-div-parent {
+	grid-column-start: 1;
+	grid-column-end: 11;
+
+	display: grid;
+	grid-template-columns: repeat(4,1fr)
+}
+
+.balance-div-child {
+	display: grid;
+	grid-template-columns: repeat(2,1fr);
+	grid-template-rows: 30px 50px 40px;
+	margin: 10px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+}
+
+.balance-p {
+
+}
+
+.balance-p-name {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 2;
+}
+
+.balance-p-funds {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	font-size: 20px;
+}
+
+.balance-p-goal {
+	font-size: 17px;
+}
+
+.balance-p-goal-date {
+	
+}
+.change-bname-input {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 2;
+
+	width: 50%;
+}
+
+.change-bfunds-input {
+	grid-column-start: 1;
+	grid-column-end: 3;
+	font-size: 20px;
+	width: 50%;
+}
+
+.change-bgoal-input {
+	font-size: 17px;
+
+	width: 50%;
+}
+
+.change-bgoal-date-input {
+	width: 25%;
+}
+
+.transfer-balance-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(3,1fr);
+	grid-template-rows: repeat(3,1fr) 20px;
+	
+	grid-column-start: 11;
+	grid-column-end: 20;
+	grid-row-start: 1;
+	grid-row-end: 3;
+	margin: 10px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+}
+.transfer-button {
+	grid-column-start: 2;
+	grid-column-end: 3;
+	grid-row-start: 3;
+	grid-row-end: 4;
+	margin: 10px;
+}
+
+.new-balance-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(4,1fr);
+	grid-template-rows: repeat(3,1fr) 20px;
+	
+	grid-column-start: 11;
+	grid-column-end: 20;
+	grid-row-start: 3;
+	grid-row-end: 5;
+
+	margin: 10px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+}
+.balance-button {
+	grid-column-start: 2;
+	grid-column-end: 4;
+	grid-row-start: 3;
+	grid-row-end: 4;
+	margin: 10px;
+}
+.new-balance-head {
+	grid-column-start: 1;
+	grid-column-end: 5;
+	grid-row-start: 1;
+	grid-row-end: 2;
+	margin: 10px;
+}
+
+.bi-pencil-square {
+	grid-column-start: 2;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 2;
+	text-align: right;
+}
+.bi-check2-square {
+	grid-column-start: 2;
+	grid-column-end: 3;
+	grid-row-start: 1;
+	grid-row-end: 2;
+	text-align: right;
+}

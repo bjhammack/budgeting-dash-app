@@ -1,16 +1,19 @@
 .login-div {
-	position: absolute;
+
 	width: 500px;
 	height: 200px;
-	margin: auto auto;
-	position: relative;
+	margin: 0;
+	position: absolute;
+	left: 50%;
+	top: 50%;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 	border: 1px solid black;
-
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
 	grid-template-rows: repeat(2, 1fr);
 	grid-gap: 5px;
+	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
 }
 .login-username{
 

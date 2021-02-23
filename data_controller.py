@@ -1,6 +1,7 @@
 import os
 from datetime import date
 import pandas as pd
+import numpy as np
 
 class Data(object):
 	def __init__(self, user=None):
@@ -31,7 +32,7 @@ class Data(object):
 			self.users = users
 
 	def display_balances(self):
-		df = self.user_balances.loc[:,['Name','Funds']]
+		df = self.user_balances.loc[:,['Name','Funds','Goal','Goal Date']]
 		return df
 
 	def display_invoices(self, invoice_type=None):
@@ -85,6 +86,23 @@ class Data(object):
 		self._update_csv('balances')
 
 		print(f'\nBalance {name} updated by ${new_funds}.\n')
+
+	def edit_balance(self, input_dict):
+		cname = input_dict['cname']
+		cfunds = input_dict['cfunds']
+		cgoal = input_dict['cgoal']
+		cgoal_date = input_dict['cgoal_date']
+		name = input_dict['name']
+		funds = input_dict['funds']
+		goal = input_dict['goal']
+		goal_date = input_dict['goal_date']
+		user = input_dict['user']
+
+		self.balances.loc[self.balances['Name'].eq(cname) & (self.balances['Funds'].eq(cfunds)|self.balances['Funds'].isnull())\
+			 & (self.balances['Goal'].eq(cgoal)|self.balances['Goal'].isnull()) & (self.balances['Goal Date'].eq(cgoal_date)|self.balances['Goal Date'].isnull())\
+			 & self.balances['user'].eq(user),['Name','Funds','Goal','Goal Date']] = name, funds, goal, goal_date
+
+		self._update_csv('balances')
 
 	def transfer_balance(self, input_dict=None):
 		from_balance = input_dict['from_balance']

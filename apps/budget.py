@@ -14,7 +14,8 @@ import data_controller as dc
 
 pd.options.mode.chained_assignment = None
 
-from apps import budget_summary_tab, budget_invoice_tab, budget_projection_tab
+from apps import budget_summary_tab, budget_invoice_tab, budget_projection_tab \
+                ,budget_visualization_tab, budget_balance_tab
 
 data_funcs = dc.Data('.')
 
@@ -65,13 +66,13 @@ layout = dcc.Tabs([
             budget_invoice_tab.layout
         ]),
         dcc.Tab(label='Balances', children=[
-            #budget_balance_tab.layout
+            budget_balance_tab.layout
         ]),
         dcc.Tab(label='Projections', children=[
             budget_projection_tab.layout
         ]),
-        dcc.Tab(label='Analytics', children=[
-            #budget_analytics_tab.layout
+        dcc.Tab(label='Visuals', children=[
+            budget_visualization_tab.layout
         ])
     ])
 

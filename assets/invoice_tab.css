@@ -1,0 +1,54 @@
+.invoice-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(20,1fr);
+	grid-template-rows: repeat(10,10vh);
+	grid-gap: 10px;
+}
+.invoice-grid > div {
+	margin: 10px;
+	background: white;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	text-align: center;
+}
+.invoice-grid > div > div {
+	width: 98%;
+	margin: 1%;
+	overflow: hidden;
+}
+
+.invoice-table-div {
+	overflow: scroll;
+	grid-column-start: 1;
+	grid-column-end: 11;
+	grid-row-start: 1;
+	grid-row-end: 9;
+}
+
+.new-invoice-grid {
+	width: 100%;
+	display: grid;
+	grid-template-columns: repeat(3,1fr);
+	grid-template-rows: repeat(4,1fr) 20px;
+	
+	grid-column-start: 11;
+	grid-column-end: 20;
+	grid-row-start: 1;
+	grid-row-end: 4;
+}
+
+.new-invoice-head {
+	grid-column-start: 1;
+	grid-column-end: 4;
+	grid-row-start: 1;
+	grid-row-end: 2;
+	margin: 10px;
+}
+.new-invoice-button {
+	grid-column-start: 2;
+	grid-column-end: 3;
+	grid-row-start: 4;
+	grid-row-end: 5;
+	margin: 10px;
+}

@@ -13,6 +13,7 @@ pd.options.mode.chained_assignment = None
 
 sys.path.append('..')
 import data_controller as dc
+
 def get_data(user):
     data = dc.Data(user=user)
     today = date.today()
@@ -86,16 +87,10 @@ layout = html.Div([
                     html.H4(children='Balances'),
                     dash_table.DataTable(
                         id='balance-table'
-                        ,columns=[{'name':i,'id':i} for i in data['balances'].columns]
+                        ,columns=[{'name':i,'id':i} for i in data['balances'].loc[:,['Name','Funds']].columns]
                         ,data=data['balances'].loc[:].to_dict('records')
                         ,style_as_list_view=True
                         ,style_cell={'font-family': "Lato",'font-size':'15px'}
                         )
                 ]),
-
-                html.Div([
-                    html.H4(children='Expense Graph'),
-                    dcc.Graph(id='expense-figure',figure=data['expense_fig'])
-                ])
-
             ], className='summary-grid')

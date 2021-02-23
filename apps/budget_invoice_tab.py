@@ -91,47 +91,7 @@ layout = html.Div([
                 html.Button('New Invoice', id='submit-invoice', className='new-invoice-button', style={'height':'50%'})
             ], className='new-invoice-grid'),
 
-            html.Div([
-                html.H4(children='Transfer Balance', className='new-invoice-head'),
-                html.Div([
-                    dcc.Dropdown(
-                        id='from-balance', style={'height':'50%','width':'176px','margin-left':'24px','position':'absolute'},
-                        options=data['balance_names'],
-                        placeholder='From'
-                    )
-                ]),
-                html.Div([
-                    dcc.Dropdown(
-                        id='to-balance', style={'height':'25%','width':'176px','margin-left':'24px','position':'absolute'},
-                        options=data['balance_names'],
-                        placeholder='To'
-                    )
-                ]),
-                html.Div([
-                    dcc.Input(id='transfer-funds', type='number', placeholder='Funds', style={'height':'50%'})]),
-
-                html.Button('Transfer', id='transfer-balance', className='transfer-button', style={'height':'50%'})
-            ], className='transfer-balance-grid'),
-
-            html.Div([
-                html.H4(children='New Balance', className='new-balance-head'),
-                html.Div([
-                    dcc.Input(id='new-balance-name', type='text', placeholder='Name', style={'height':'50%'})]),
-                html.Div([
-                    dcc.Input(id='new-balance-funds', type='number', placeholder='Funds', style={'height':'50%'})]),
-                html.Div([
-                    dcc.Input(id='new-balance-goal', type='number', placeholder='Goal', style={'height':'50%'})]),
-                html.Div([
-                     dcc.DatePickerSingle(
-                        id='new-balance-goal-date',
-                        clearable=True,
-                        with_portal=True,
-                        placeholder='Goal Date'
-                        )
-                ]),
-
-                html.Button('New Balance', id='new-balance', className='balance-button', style={'height':'50%'})
-            ], className='new-balance-grid'),
+            
             html.Div(id='hidden-div-invoice',style={'display':'none','visibility':'hidden'}),
             html.Div(id='hidden-div-transfer',style={'display':'none','visibility':'hidden'}),
             html.Div(id='hidden-div-balance',style={'display':'none','visibility':'hidden'}),
