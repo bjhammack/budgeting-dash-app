@@ -16,10 +16,10 @@ pd.options.mode.chained_assignment = None
 sys.path.append('..')
 import data_controller as dc
 
-def get_data(user):
-  data = dc.Data(user)
+def get_data(user,password):
+  data = dc.Data(user,password)
   balances = data.display_balances().round(2)
-  balance_names = [{'label':i,'value':i} for i in balances.loc[:,'Name'].sort_values().unique()]
+  balance_names = [{'label':i,'value':i} for i in balances.loc[:,'name'].sort_values().unique()]
   return_dict = {
     'balances':balances,
     'balance_names':balance_names
@@ -27,8 +27,8 @@ def get_data(user):
 
   return return_dict
 
-data = get_data('.')
-data_funcs = dc.Data('.')
+data = get_data('.',None)
+data_funcs = dc.Data('.',None)
 
 def create_balance_div(index,name, funds, goal, goal_date):
   layout = html.Div([
@@ -44,8 +44,6 @@ def create_balance_div(index,name, funds, goal, goal_date):
           dcc.DatePickerSingle(className='change-bgoal-date-input',id={'type':'change-bgoal-date-input','index':index},clearable=True,with_portal=True,date=goal_date,style={'display':'none'})
           ], className='balance-div-child')
   return layout
-
-data = get_data('.')
 
 layout = html.Div([
             html.Div([], className='balance-div-parent',id='balance-div-parent'),
@@ -100,9 +98,9 @@ layout = html.Div([
   Input('username-store','data')
   )
 def update_balances(clicks1,clicks2,clicks3,user):
-    if user and user['name'] != '':
-        data = get_data(user['name'])
-        return [create_balance_div(k,i['Name'],i['Funds'],i['Goal'],i['Goal Date']) for k,i in enumerate(data['balances'].loc[:].to_dict('records'))]
+    if user and user['name'] != '' and user['password'] != '':
+        data = get_data(user['name'],user['password'])
+        return [create_balance_div(k,i['name'],i['funds'],i['goal'],i['goal_date']) for k,i in enumerate(data['balances'].loc[:].to_dict('records'))]
     else:
         raise PreventUpdate
 
@@ -135,6 +133,7 @@ def update_balances(clicks1,clicks2,clicks3,user):
   State('username-store', 'data')
   )
 def edit_balance(edit_click,submit_click, cname, cfunds, cgoal, cgoal_date, name, funds, goal, goal_date, user):
+  funcs = dc.Data(user['name'],user['password'])
   button_id = {'type':''}
   ctx = dash.callback_context
   if ctx.triggered:
@@ -149,7 +148,7 @@ def edit_balance(edit_click,submit_click, cname, cfunds, cgoal, cgoal_date, name
       input_dict = {'cname':cname, 'cfunds':cfunds, 'cgoal':cgoal, 'cgoal_date':cgoal_date, 'name':name\
                     , 'funds':funds, 'goal':goal, 'goal_date':goal_date, 'user':user['name']}
 
-      data_funcs.edit_balance(input_dict)
+      funcs.edit_balance(input_dict)
 
     return {'display':'none'},{'display':'none'},{'display':'none'},{'display':'none'}\
           ,{'display':''},{'display':''},{'display':''},{'display':''}\

@@ -1,5 +1,5 @@
 from datetime import date
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, MATCH, ALL
 import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
@@ -17,25 +17,25 @@ pd.options.mode.chained_assignment = None
 from apps import budget_summary_tab, budget_invoice_tab, budget_projection_tab \
                 ,budget_visualization_tab, budget_balance_tab
 
-data_funcs = dc.Data('.')
+data_funcs = dc.Data('.',None)
 
-def get_data(user):
-    data = dc.Data(user=user)
+def get_data(user, password):
+    data = dc.Data(user=user, password=password)
     today = date.today()
     invoice_df = data.display_invoices()
-    invoice_df.loc[:,'Date'] = pd.to_datetime(invoice_df.loc[:, 'Date']).dt.strftime('%m/%d/%Y')
-    categories = [{'label':i,'value':i} for i in invoice_df.loc[:,'Category'].sort_values().unique()]
+    invoice_df.loc[:,'date'] = pd.to_datetime(invoice_df.loc[:, 'date']).dt.strftime('%m/%d/%Y')
+    categories = [{'label':i,'value':i} for i in invoice_df.loc[:,'category'].sort_values().unique()]
     expense_df = data.display_invoices(invoice_type='Expense')
     expense_summary = data.annual_summary()
     income_summary = data.annual_summary(invoice_type='Income')
     net_income = data.net_income()
     balances = data.display_balances().round(2)
-    balance_names = [{'label':i,'value':i} for i in balances.loc[:,'Name'].sort_values().unique()]
-    expense_graph_df = expense_df.loc[:,['Date','Value']]
-    expense_graph_df.loc[:,'Year-Month'] = pd.DatetimeIndex(expense_graph_df.loc[:, ('Date')]).year.astype(str) \
-                                    +'_'+ pd.DatetimeIndex(expense_graph_df.loc[:, ('Date')]).month.astype(str)
-    expense_graph_df = expense_graph_df.loc[:,['Year-Month','Value']].groupby(by=['Year-Month']).sum().sort_values(by='Year-Month')
-    expense_fig = px.line(expense_graph_df.loc[:].rename(columns={'Value':'Expenses'}).reset_index(), x='Year-Month',y='Expenses')
+    balance_names = [{'label':i,'value':i} for i in balances.loc[:,'name'].sort_values().unique()]
+    expense_graph_df = expense_df.loc[:,['date','value']]
+    expense_graph_df.loc[:,'Year-Month'] = pd.DatetimeIndex(expense_graph_df.loc[:, ('date')]).year.astype(str) \
+                                    +'_'+ pd.DatetimeIndex(expense_graph_df.loc[:, ('date')]).month.astype(str)
+    expense_graph_df = expense_graph_df.loc[:,['Year-Month','value']].groupby(by=['Year-Month']).sum().sort_values(by='Year-Month')
+    expense_fig = px.line(expense_graph_df.loc[:].rename(columns={'value':'Expenses'}).reset_index(), x='Year-Month',y='Expenses')
     
     expense_proj = data.projection_summary()
 
@@ -56,7 +56,7 @@ def get_data(user):
 
     return return_dict
 
-data = get_data('.')
+data = get_data('.',None)
 
 layout = dcc.Tabs([
         dcc.Tab(label='Summary', children=[
@@ -97,7 +97,8 @@ def update_category(value):
 def new_invoice(n_clicks,value,name,category,invoice_type,balance,date,user_store):
     if n_clicks:
         input_dict = {'value':value,'name':name,'category':category,'invoice_type':invoice_type,'balance':balance,'date':date,'user':user_store['name']}
-        data_funcs.new_invoice(input_dict)
+        funcs = dc.Data(user_store['name'],user_store['password'])
+        funcs.new_invoice(input_dict)
 
 @app.callback(
     Output('hidden-div-transfer','children'),
@@ -109,10 +110,11 @@ def new_invoice(n_clicks,value,name,category,invoice_type,balance,date,user_stor
     )
 def transfer_balance(n_clicks,t_from,t_to,funds,user_store):
     if n_clicks:
-        input_dict = {'value':funds,'name':f'From: {t_from}, To: {t_to}','category':'Transfers','invoice_type':'Transfer','balance':'','date':str(data['today']),'user':user_store['name']}
-        data_funcs.new_invoice(input_dict)
-        transfer_dict = {'from_balance':t_from,'to_balance':t_to,'funds':funds,'user':user_store['name']}
-        data_funcs.transfer_balance(transfer_dict)
+        input_dict = {'value':funds,'name':f'From: {t_from}, To: {t_to}','category':'Transfers','invoice_type':'Transfer','balance':t_from,'date':str(data['today']),'user':user_store['name'],'to_balance':t_to}
+        funcs = dc.Data(user_store['name'],user_store['password'])
+        funcs.new_invoice(input_dict, is_transfer=True)
+        #transfer_dict = {'from_balance':t_from,'to_balance':t_to,'funds':funds,'user':user_store['name']}
+        #data_funcs.transfer_balance(transfer_dict)
 
 @app.callback(
     Output('hidden-div-balance','children'),
@@ -126,7 +128,8 @@ def transfer_balance(n_clicks,t_from,t_to,funds,user_store):
 def new_balance(n_clicks,name,funds,goal,goal_date,user_store):
     if n_clicks:
         input_dict = {'name':name,'funds':funds,'goal':goal,'goal_date':goal_date,'user':user_store['name']}
-        data_funcs.new_balance(input_dict)
+        funcs = dc.Data(user_store['name'],user_store['password'])
+        funcs.new_balance(input_dict)
 
 @app.callback(
     Output('expense-summary-table','data'),
@@ -144,11 +147,12 @@ def new_balance(n_clicks,name,funds,goal,goal_date,user_store):
     Input('new-balance','n_clicks'),
     Input('submit-invoice','n_clicks'),
     Input('transfer-balance','n_clicks'),
+    Input({'type':'balance-submit-change-icon','index':ALL},'n_clicks'),
     Input('username-store','data')
     )
-def update_data(clicks1,clicks2,clicks3,user):
-    if user and user['name'] != '':
-        data = get_data(user['name'])
+def update_data(clicks1,clicks2,clicks3,clicks4,user):
+    if user and user['name'] != '' and user['password'] != '':
+        data = get_data(user['name'], user['password'])
         return data['expense_summary'].loc[:].to_dict('records'),data['net_income'].loc[:].to_dict('records')\
                 ,data['income_summary'].loc[:].to_dict('records'),data['balances'].loc[:].to_dict('records')\
                 ,data['expense_fig'],data['invoice_df'].loc[:].to_dict('records')\

@@ -27,7 +27,7 @@ def check_login(n_clicks, username, password):
 	if n_clicks:
 	    user_pass_pairs = users.loc[users.username.eq(username) & users.password.eq(password)]
 	    if len(user_pass_pairs) > 0:
-	    	return {'name':username}, dcc.Location(pathname='/apps/home',id='home-redirect')
+	    	return {'name':username, 'password':password}, dcc.Location(pathname='/apps/home',id='home-redirect')
 	    else:
 	    	return '', 'Incorrect Credentials'
 	else:

@@ -17,10 +17,10 @@ def get_data(user):
     data = dc.Data(user=user)
     today = date.today()
     invoice_df = data.display_invoices()
-    invoice_df.loc[:,'Date'] = pd.to_datetime(invoice_df.loc[:, 'Date']).dt.strftime('%m/%d/%Y')
-    categories = [{'label':i,'value':i} for i in invoice_df.loc[:,'Category'].sort_values().unique()]
+    invoice_df.loc[:,'date'] = pd.to_datetime(invoice_df.loc[:, 'date']).dt.strftime('%m/%d/%Y')
+    categories = [{'label':i,'value':i} for i in invoice_df.loc[:,'category'].sort_values().unique()]
     balances = data.display_balances().round(2)
-    balance_names = [{'label':i,'value':i} for i in balances.loc[:,'Name'].sort_values().unique()]
+    balance_names = [{'label':i,'value':i} for i in balances.loc[:,'name'].sort_values().unique()]
     return_dict = {
         'today':today,
         'invoice_df':invoice_df,

@@ -23,13 +23,14 @@ except:
               Input('username-store','data')
               )
 def display_page(pathname, username_store):
-    username_store = username_store or {'name':''}
+    username_store = username_store or {'name':'','password':''}
     username = username_store['name']
-    if pathname == '/apps/home' and username != '':
+    password = username_store['password']
+    if pathname == '/apps/home' and username != '' and password != '':
         return home.layout
-    elif pathname == '/apps/budget' and username != '':
+    elif pathname == '/apps/budget' and username != '' and password != '':
         return budget.layout
-    elif username == '':
+    elif username == '' or password == '':
         return login.layout
     else:
         return f'404 {pathname} not found.'
