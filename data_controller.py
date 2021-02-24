@@ -125,8 +125,14 @@ class Data(object):
 		self.init_db_connection()
 
 		name = input_dict['name'].title()
-		funds = round(float(input_dict['funds']), 2)
-		goal = round(float(input_dict['goal']), 2)
+		try:
+			funds = round(float(input_dict['funds']), 2)
+		except:
+			funds = 'NULL'
+		try:
+			goal = round(float(input_dict['goal']), 2)
+		except:
+			goal = 'NULL'
 		goal_date = input_dict['goal_date']
 		if goal_date in (None, '', ' '):
 			goal_date = ''
@@ -152,6 +158,11 @@ class Data(object):
 		goal = input_dict['goal']
 		goal_date = input_dict['goal_date']
 		user = input_dict['user']
+
+		if not goal_date:
+			goal_date = ''
+		if not goal:
+			goal = ''
 
 		balance_id = self.balances.loc[self.balances['name'].eq(cname) & self.balances['user_id'].eq(self.user['id'].iloc[0])]['id'].iloc[0]
 
