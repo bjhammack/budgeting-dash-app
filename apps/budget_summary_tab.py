@@ -61,7 +61,7 @@ layout = html.Div([
                         ,columns=[{'name':i,'id':i} for i in data['expense_summary'].columns]
                         ,data=data['expense_summary'].loc[:].to_dict('records')
                         ,style_as_list_view=True
-                        ,style_cell={'font-family': "Lato",'font-size':'15px'}
+                        ,style_cell={'font-family': "Lato",'font-size':'14px'}
                         )
                 ]),
 
@@ -72,7 +72,7 @@ layout = html.Div([
                         ,columns=[{'name':i,'id':i} for i in data['net_income'].columns]
                         ,data=data['net_income'].loc[:].to_dict('records')
                         ,style_as_list_view=True
-                        ,style_cell={'font-family': "Lato",'font-size':'15px'}
+                        ,style_cell={'font-family': "Lato",'font-size':'14px'}
                         )
                 ]),
 
@@ -83,7 +83,7 @@ layout = html.Div([
                         ,columns=[{'name':i,'id':i} for i in data['income_summary'].columns]
                         ,data=data['income_summary'].loc[:].to_dict('records')
                         ,style_as_list_view=True
-                        ,style_cell={'font-family': "Lato",'font-size':'15px'}
+                        ,style_cell={'font-family': "Lato",'font-size':'14px'}
                         )
                 ]),
 
@@ -94,7 +94,7 @@ layout = html.Div([
                         ,columns=[{'name':i,'id':i} for i in data['balances'].loc[:,['name','funds']].columns]
                         ,data=data['balances'].loc[:].to_dict('records')
                         ,style_as_list_view=True
-                        ,style_cell={'font-family': "Lato",'font-size':'15px'}
+                        ,style_cell={'font-family': "Lato",'font-size':'14px'}
                         )
                 ]),
             ], className='summary-grid')
