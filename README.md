@@ -6,11 +6,11 @@ This is a fullstack project that utilizes a Dash and CSS front end, Python and D
 
 ### The App
 The app currently has four main interactive components. The first is the login page, where a user that has been entered into the system can enter their username and password to access their account.
-![Login Page](https://github.com/bjhammack/budgeting-dash-app/example_images/login_example.png)
+![Login Page](https://github.com/bjhammack/budgeting-dash-app/blob/main/example_images//login_example.png)
 The second is a summary tab that shows an overview of a users expenses by month and category, income by month and category, net income by month, and the current state of their balances.
-![Summary Page](https://github.com/bjhammack/budgeting-dash-app/example_images/summary_example.png)
+![Summary Page](https://github.com/bjhammack/budgeting-dash-app/blob/main/example_images//summary_example.png)
 The third is an invoices tab that allows users to view all invoices they have created and to create new invoices that will automatically update their balances and summaries when entered.
-![Invoices Page](https://github.com/bjhammack/budgeting-dash-app/example_images/invoices_example.png)
+![Invoices Page](https://github.com/bjhammack/budgeting-dash-app/blob/main/example_images/invoices_example.png)
 The last is a balances tab that allows users to view all of their balances, transfer funds from one balance to another, edit balances, and create new balances.
 ![Balance Page](https://github.com/bjhammack/budgeting-dash-app/blob/main/example_images/balances_example.png)
 
