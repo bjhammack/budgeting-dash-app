@@ -12,7 +12,7 @@ The second is a summary tab that shows an overview of a users expenses by month 
 The third is an invoices tab that allows users to view all invoices they have created and to create new invoices that will automatically update their balances and summaries when entered.
 ![Invoices Page](https://github.com/bjhammack/budgeting-dash-app/example_images/invoices_example.png)
 The last is a balances tab that allows users to view all of their balances, transfer funds from one balance to another, edit balances, and create new balances.
-![Balance Page](https://github.com/bjhammack/budgeting-dash-app/example_images/balances_example.png)
+![Balance Page](https://github.com/bjhammack/budgeting-dash-app/blob/main/example_images/balances_example.png)
 
 ### Future Additions
 There are several new features currently in the pipeline being worked on, as well as several features still in the conceptual stage I would like to incorporate.
